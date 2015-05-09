@@ -2,18 +2,46 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="./style.css">
+		<script type="text/javascript">
+		  WebFontConfig = {
+		    google: { families: [ 'Raleway:600,400:latin' ] }
+		  };
+		  (function() {
+		    var wf = document.createElement('script');
+		    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+		      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+		    wf.type = 'text/javascript';
+		    wf.async = 'true';
+		    var s = document.getElementsByTagName('script')[0];
+		    s.parentNode.insertBefore(wf, s);
+		  })();
+		</script>
 	</head>
   <body>
-    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+  	<a class="header" href="/">VoiceMash</a>
+  	<div class="input">
+  		<div class="container">
+	  		<input type="text" class="video-url" placeholder="Youtube URL">
+	  		<br>
+	  		<div class="btn btn-link preview">Preview</div>
+	  		<input type="text" class="start-time" placeholder="Start Time(seconds)">
+	  		<input type="text" class="end-time" placeholder="End Time(seconds)">
+	  		<div class="btn go">Go</div>
+  		</div>
+  	</div>
+  	<div class="loader">Loading...</div>
     <div class="video-container">
-	    <div id="yt-player"></div>
+    	<div class="container">
+		    <div id="yt-player"></div>
+    	</div>
     	<div class="blocker">
     		<div class="btn record">Record</div>
     	</div>
     </div>
+    <div class="slider">Stop</div>
 		<div class="script">
-			<script type="text/javascript" src="./script.js"></script>
 			<script type="text/javascript" src="./jquery-2.1.4.min.js"></script>
+			<script type="text/javascript" src="./script.js"></script>
 		</div>
   </body>
 </html>

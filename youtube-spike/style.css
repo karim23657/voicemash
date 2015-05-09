@@ -1,1 +1,128 @@
-.btn{padding:8px 3px;border:1px solid #a1305b}.blocker{width:100%;height:100%;position:absolute;top:0}
+body {
+  font-family: 'Raleway', sans-serif;
+  margin: 0;
+  margin-bottom: 100px;
+}
+input,
+.btn,
+input {
+  outline: none;
+}
+input {
+  padding: 8px 10px;
+  border: 1px solid #cccccc;
+}
+input:focus {
+  border-color: #2cc099;
+}
+.btn {
+  cursor: pointer;
+  padding: 5px 10px;
+  border: 1px solid #2cc099;
+  display: inline-block;
+  color: #2cc099;
+  background: #ffffff;
+}
+.btn:hover {
+  background: #2cc099;
+  color: #ffffff;
+}
+.btn:active {
+  background: #196d57;
+  color: #ffffff;
+}
+.btn.btn-link {
+  border: none;
+  background: transparent;
+}
+.btn.btn-link:hover,
+.btn.btn-link:active {
+  background: transparent;
+  text-decoration: underline;
+  color: #2cc099;
+}
+.container {
+  width: 1280px;
+  margin: auto;
+}
+.header {
+  text-decoration: none;
+  display: block;
+  height: 60px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 33px;
+  padding-top: 20px;
+  border-bottom: 1px solid #2cc099;
+  color: #2cc099;
+}
+.input {
+  padding: 15px 0;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #2cc099;
+}
+.input .container {
+  width: 640px;
+}
+.input .start-time,
+.input .end-time {
+  margin-right: 10px;
+}
+.input .video-url {
+  width: 620px;
+  margin-bottom: 10px;
+}
+.input .start-time {
+  width: 120px;
+}
+.input .end-time {
+  width: 120px;
+}
+.input .preview {
+  float: right;
+  font-size: 14px;
+  margin-top: 5px;
+}
+.loader {
+  display: none;
+  text-align: center;
+  margin-top: 50px;
+}
+.video-container {
+  display: none;
+  position: relative;
+}
+.video-container > .container {
+  width: 640px;
+  margin-bottom: -4px;
+}
+.video-container .blocker {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  text-align: center;
+}
+.video-container .blocker .record {
+  margin-top: 165px;
+  padding: 20px 30px;
+  font-weight: 600;
+  min-width: 0;
+  transition: 0.25s min-width, 0.25s margin-top;
+}
+.video-container .blocker .record.animated {
+  margin-top: 390px;
+  min-width: 578px;
+}
+.slider {
+  width: 638px;
+  text-align: center;
+  margin: auto;
+  border: 1px solid #2cc099;
+  cursor: pointer;
+  padding: 20px 0px;
+  color: #ff0000;
+  background-image: url('/2px-theme-color.png');
+  background-size: 0px;
+  background-repeat: repeat-y;
+}

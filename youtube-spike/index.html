@@ -25,6 +25,7 @@
 	  		<br>
 	  		<div class="btn btn-link preview">Preview</div>
 	  		<input type="text" class="start-time" placeholder="Start Time(seconds)">
+	  		<span style="margin-right: 10px;font-size: 13px;">to</span>
 	  		<input type="text" class="end-time" placeholder="End Time(seconds)">
 	  		<div class="btn go">Go</div>
   		</div>
@@ -36,9 +37,11 @@
     	</div>
     	<div class="blocker">
     		<div class="btn record">Record</div>
+    		<br>
+    		<div class="btn retry hide">Retry</div>
     	</div>
     </div>
-    <div class="slider">Stop</div>
+    <div class="slider" data-action="stop">Stop</div>
 		<div class="script">
 			<script type="text/javascript" src="./jquery-2.1.4.min.js"></script>
 			<script type="text/javascript" src="./script.js"></script>

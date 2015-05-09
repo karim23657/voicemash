@@ -12,6 +12,10 @@ var config = {
   id: getParameterByName('v')
 };
 
+config.id && $('.video-url').val('http://youtube.com/watch?v=' + config.id);
+config.startTime && $('.start-time').val(config.startTime);
+config.endTime && $('.end-time').val(config.endTime);
+
 if(config.startTime && config.endTime)
   config.endTime = config.endTime - config.startTime;
 
@@ -45,7 +49,8 @@ if(config.id){
   }
 
   var done = false;
-  var play = function(){
+  var stopTimeout = 0;
+  function play(){
     config.startTime && player.seekTo(config.startTime);
     player.playVideo();
     done = false;
@@ -60,21 +65,54 @@ if(config.id){
   function onPlayerStateChange(event) {
     if (config.endTime && event.data == YT.PlayerState.PLAYING && !done) {
       animateRecord();
-      setTimeout(function (){
-        player.stopVideo();
+      stopTimeout = setTimeout(function (){
+        player.pauseVideo();
       }, config.endTime * 1000);
       done = true;
+    } else if(event.data == YT.PlayerState.PAUSED){
+      $('.blocker .retry').removeClass('hide');
+      $('.slider').text('Save').data('action', 'save').attr('class', 'slider save');
     }
   }
   $('.record').click(function(e){
+    $('.record').addClass('animated');
     setTimeout(function(){
       play();
-      $('.record').addClass('animated');
       $('.record').hide();
       $('.slider').show();
     }, 250);
   });
 }
+function animateRecord(){
+  $('.slider').animate({
+      backgroundSize: '100%'
+    }, (config.endTime || (player.getDuration() - config.startTime)) * 1000,
+    'linear'
+  );
+};
+
+function retry(e){
+  $('.slider').css('backgroundSize', '0').text('Stop').data('action', 'stop').attr('class', 'slider stop');
+  $('.blocker .retry').addClass('hide');
+  play();
+};
+
+$('.slider').click(function(e){
+  switch($(this).data('action')){
+    case 'stop':
+      player.stopVideo();
+      clearInterval(stopTimeout);
+      $('.slider').stop().text('Retry').data('action', 'retry').attr('class', 'slider retry');
+      break;
+    case 'save':
+      break;
+    case 'retry':
+      retry(e);
+      break;
+  }
+});
+
+$('.retry').click(retry);
 
 $('.go').click(function(e){
   var id = /v=[^&]*/.exec($('.video-url').val());
@@ -87,11 +125,3 @@ $('.go').click(function(e){
   }
   window.location = "/?"+id[0]+(start && '&start='+start || '')+(end &&  '&end='+end || '')+'/';
 });
-
-function animateRecord(){
-  $('.slider').animate({
-      backgroundSize: '100%'
-    }, (config.endTime || (player.getDuration() - config.startTime)) * 1000,
-    'linear'
-  );
-};

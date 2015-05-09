@@ -15,6 +15,9 @@ input {
 input:focus {
   border-color: #2cc099;
 }
+.hide {
+  display: none !important;
+}
 .btn {
   cursor: pointer;
   padding: 5px 10px;
@@ -103,26 +106,39 @@ input:focus {
   top: 0;
   text-align: center;
 }
-.video-container .blocker .record {
+.video-container .blocker .btn {
   margin-top: 165px;
   padding: 20px 30px;
   font-weight: 600;
   min-width: 0;
   transition: 0.25s min-width, 0.25s margin-top;
 }
-.video-container .blocker .record.animated {
+.video-container .blocker .btn.animated {
   margin-top: 390px;
   min-width: 578px;
 }
+.video-container .blocker .retry {
+  margin-top: 290px;
+}
 .slider {
+  display: none;
   width: 638px;
   text-align: center;
   margin: auto;
   border: 1px solid #2cc099;
   cursor: pointer;
   padding: 20px 0px;
-  color: #ff0000;
+  color: #333333;
   background-image: url('/2px-theme-color.png');
   background-size: 0px;
   background-repeat: repeat-y;
+}
+.slider:hover {
+  text-decoration: underline;
+}
+.slider.save {
+  color: #ffffff;
+}
+.slider.save:active {
+  background: #196d57;
 }

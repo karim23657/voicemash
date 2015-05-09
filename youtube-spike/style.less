@@ -3,7 +3,6 @@
 @white: #fff;
 @border-gray: #ccc;
 @max-width: 640px;
-@red: #f00;
 
 body{
 	font-family: 'Raleway', sans-serif;
@@ -21,6 +20,9 @@ input{
   &:focus{
   	border-color:@theme-color;
   }
+}
+.hide{
+	display: none !important;
 }
 
 .btn{
@@ -112,7 +114,7 @@ input{
 	  position: absolute;
 	  top: 0;
 	  text-align: center;
-	  .record{
+	  .btn{
 		  margin-top: 165px;
 		  padding: 20px 30px;
 		  font-weight: 600;
@@ -123,18 +125,31 @@ input{
 			  min-width: 578px;
 		  }
 	  }
+	  .retry{
+	  	margin-top: 290px;
+	  }
 	}
 }
 
 .slider{
+	display: none;
   width: @max-width - 2px;
   text-align: center;
   margin: auto;
   border: 1px solid @theme-color;
   cursor: pointer;
   padding: 20px 0px;
-  color: @red;
+  color: @black;
   background-image: url('/2px-theme-color.png');
   background-size: 0px;
   background-repeat: repeat-y;
+  &:hover{
+  	text-decoration: underline;
+  }
+  &.save{
+  	color: @white;
+  	&:active{
+  		background: darken(@theme-color, 20%);
+  	}
+  }
 }

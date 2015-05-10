@@ -1,0 +1,20 @@
+{
+  "name": "voicemash",
+  "description": "A command line streaming youtube video downloader.",
+  "keywords": [
+    "youtube",
+    "download",
+    "video",
+    "cli"
+  ],
+  "version": "0.0.1",
+  "dependencies": {
+    "ytdl-core": "*",
+    "express": "4.8.x",
+    "wav": "*",
+    "fluent-ffmpeg": "*"
+  },
+  "devDependencies": {
+    "mocha": "x"
+  }
+}

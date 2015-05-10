@@ -40,7 +40,7 @@
     button.disabled = true;
     button.previousElementSibling.disabled = false;
     //__log('Stopped recording.');
-    
+
     // create WAV download link using audio data blob
     createDownloadLink();
     recorder.clear();
@@ -51,7 +51,7 @@
     fd.append('data', soundBlob);
     $.ajax({
         type: 'POST',
-        url: '//voicemash.localtunnel.me/blend?url=http://youtube.com/watch?v=tQuvWWJK44w',
+        url: '//localhost:8080/blend?url=http://youtube.com/watch?v=tQuvWWJK44w',
         data: fd,
         processData: false,
         contentType: false

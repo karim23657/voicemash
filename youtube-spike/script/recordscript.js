@@ -18,6 +18,7 @@ function stopRecording() {
   return au;
 }
 
+var soundBlob;
 function createDownloadLink() {
   var au = document.createElement('audio');
   recorder && recorder.exportWAV(function(blob) {
@@ -26,6 +27,7 @@ function createDownloadLink() {
     au.loop = 'loop';
     au.src = url;
     $('#audio').html($(au));
+    soundBlob = blob;
   });
   return au;
 }

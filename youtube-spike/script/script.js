@@ -11,6 +11,7 @@ var config = {
   endTime: parseInt(getParameterByName('end')) || 0,
   id: getParameterByName('v')
 };
+var aud = getParameterByName('aud');
 
 config.id && $('.video-url').val('http://youtube.com/watch?v=' + config.id);
 config.startTime && $('.start-time').val(config.startTime);
@@ -19,7 +20,7 @@ config.endTime && $('.end-time').val(config.endTime);
 if(config.startTime && config.endTime)
   config.endTime = config.endTime - config.startTime;
 
-var loop = false;
+var loop = Boolean(aud);
 
 if(config.id){
   $('.loader').show();
@@ -62,12 +63,13 @@ if(config.id){
     player.mute();
     $('.video-container').show();
     $('.loader').hide();
+    if(aud)
+      play();
   }
 
   function onPlayerStateChange(event) {
     if (config.endTime && event.data == YT.PlayerState.PLAYING && !done) {
       loop || animateRecord();
-      console.log(2)
       loop && audioWrapper.play() || audioWrapper.record();
       stopTimeout = setTimeout(function (){
         player.pauseVideo();
@@ -79,7 +81,7 @@ if(config.id){
       if(!loop)
         el = audioWrapper.stop();
       $('.blocker .retry').removeClass('hide');
-      $('.slider').text('Save').data('action', 'save').attr('class', 'slider save');
+      aud || $('.slider').text('Save').data('action', 'save').attr('class', 'slider save');
       loop = true;
       if((audioWrapper.el() || {}).readyState > 2)
         play()
@@ -115,49 +117,58 @@ function sendData(){
   fd.append('data', soundBlob);
   $.ajax({
       type: 'POST',
-      url: '//localhost:8080/blend?start='+config.startTime+'&end='+config.endTime+'&url=http://youtube.com/watch?v=' + config.id,
+      url: '//localhost:5000/save?start='+config.startTime+'&end='+config.endTime+'&url=http://youtube.com/watch?v=' + config.id,
       data: fd,
       processData: false,
       contentType: false
-  }).done(function(response, status, xhr) {
-      // check for a filename
-      var filename = "";
-      var disposition = xhr.getResponseHeader('Content-Disposition');
-      if (disposition && disposition.indexOf('attachment') !== -1) {
-          var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-          var matches = filenameRegex.exec(disposition);
-          if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
-      }
-
-      var type = xhr.getResponseHeader('Content-Type');
-      var blob = new Blob([response], { type: type });
-
-      if (typeof window.navigator.msSaveBlob !== 'undefined') {
-          // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-          window.navigator.msSaveBlob(blob, filename);
-      } else {
-          var URL = window.URL || window.webkitURL;
-          var downloadUrl = URL.createObjectURL(blob);
-
-          if (filename) {
-              // use HTML5 a[download] attribute to specify filename
-              var a = document.createElement("a");
-              // safari doesn't support this yet
-              if (typeof a.download === 'undefined') {
-                  window.location = downloadUrl;
-              } else {
-                  a.href = downloadUrl;
-                  a.download = filename;
-                  document.body.appendChild(a);
-                  a.click();
-              }
-          } else {
-              window.location = downloadUrl;
-          }
-
-          setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
-      }
+  }).done(function(response, status, xhr){
+    xhr.status == 200 && alert('http://localhost:8000/view?k='+response);
   });
+  // $.ajax({
+  //     type: 'POST',
+  //     url: '//localhost:8080/blend?start='+config.startTime+'&end='+config.endTime+'&url=http://youtube.com/watch?v=' + config.id,
+  //     data: fd,
+  //     processData: false,
+  //     contentType: false
+  // }).done(function(response, status, xhr) {
+  //     // check for a filename
+  //     var filename = "";
+  //     var disposition = xhr.getResponseHeader('Content-Disposition');
+  //     if (disposition && disposition.indexOf('attachment') !== -1) {
+  //         var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+  //         var matches = filenameRegex.exec(disposition);
+  //         if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+  //     }
+
+  //     var type = xhr.getResponseHeader('Content-Type');
+  //     var blob = new Blob([response], { type: type });
+
+  //     if (typeof window.navigator.msSaveBlob !== 'undefined') {
+  //         // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+  //         window.navigator.msSaveBlob(blob, filename);
+  //     } else {
+  //         var URL = window.URL || window.webkitURL;
+  //         var downloadUrl = URL.createObjectURL(blob);
+
+  //         if (filename) {
+  //             // use HTML5 a[download] attribute to specify filename
+  //             var a = document.createElement("a");
+  //             // safari doesn't support this yet
+  //             if (typeof a.download === 'undefined') {
+  //                 window.location = downloadUrl;
+  //             } else {
+  //                 a.href = downloadUrl;
+  //                 a.download = filename;
+  //                 document.body.appendChild(a);
+  //                 a.click();
+  //             }
+  //         } else {
+  //             window.location = downloadUrl;
+  //         }
+
+  //         setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+  //     }
+  // });
 };
 
 function stopVid(){
@@ -204,4 +215,10 @@ var audioWrapper = {
   reset: function(){ this.el() && this.el().load()},
   record: function(){ startRecording()},
   stop: function(){this.au = stopRecording(); return this.au;}
+}
+
+if(aud){
+  $('.blocker').empty();
+  $('#audio').html('<audio src="http://localhost:5000/download/'+aud+'.wav" loop="loop" controls="true"></audio>')
+  // $('.slider').text('Try Another')
 }

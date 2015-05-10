@@ -1,4 +1,5 @@
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, request, send_from_directory, send_file
+import hashlib, re, json
 import logging
 try:
     from flask.ext.cors import CORS  # The typical way to import flask-cors
@@ -10,10 +11,11 @@ except ImportError:
 
     from flask.ext.cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='/files')
 logging.basicConfig(level=logging.INFO)
-cors = CORS(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['UPLOAD_FOLDER'] = './files/'
+app.config['SALT'] = 'bigomega'
 
 from datetime import timedelta
 from flask import make_response, request, current_app
@@ -62,23 +64,49 @@ def crossdomain(origin=None, methods=None, headers=None,
         return update_wrapper(wrapped_function, f)
     return decorator
 
+@app.route("/download/<path:filename>")
+@crossdomain(origin='*')
+def download(filename):
+    return send_file('./files/' + filename, mimetype="audio/wav", attachment_filename="voicemash-"+filename[:10]+".wav")
+
 @app.route("/")
 def hello():
+    f = open('count', 'w')
     return "Hello World!"
 
 @app.route("/save", methods=['GET', 'POST'])
 @crossdomain(origin='*')
 def save():
     if request.method == 'POST':
-        pass
-        print request.files
         file = request.files['data']
+        url = request.args['url']
+        start = request.args['start']
+        end = request.args['end']
         if file:
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], '1.wav'))
-            return "(y)"
+            f = open('count', 'r')
+            c = int(f.read()) + 1
+            f.close()
+            f = open('count', 'w')
+            f.write(str(c))
+            f.close()
+            m = hashlib.md5();
+            m.update(app.config['SALT'] + str(c))
+            name = m.hexdigest()
+            m = hashlib.md5()
+            m.update(name)
+            aud = m.hexdigest()
+            f = open('db', 'a')
+            f.write('\n'+str(name)+','+str(c)+','+str(aud)+','+str(url)+','+str(start)+','+str(end)+'\n')
+            f.close()
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], str(aud)+'.wav'))
+            return str(name)
     else:
-      return "sss";
+      key = request.args['k']
+      f = open('db', 'r')
+      x = f.read()
+      v = re.search(r'\n(.*'+key+'.*)\n', x, re.M|re.I)
+      return json.dumps(v.group(1).split(','));
 
 if __name__ == "__main__":
     app.run(debug=True)

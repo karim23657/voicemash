@@ -1,0 +1,39 @@
+body {
+  font-family: 'Raleway', sans-serif;
+  margin: 0;
+  margin-bottom: 100px;
+}
+input,
+.btn,
+input {
+  outline: none;
+}
+input {
+  padding: 8px 10px;
+  border: 1px solid #cccccc;
+}
+input:focus {
+  border-color: #2cc099;
+}
+.hide {
+  display: none !important;
+}
+.container {
+  width: 1280px;
+  margin: auto;
+}
+.header {
+  text-decoration: none;
+  display: block;
+  height: 60px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 33px;
+  padding-top: 20px;
+  border-bottom: 1px solid #2cc099;
+  color: #2cc099;
+}
+.loader {
+  text-align: center;
+  margin-top: 50px;
+}

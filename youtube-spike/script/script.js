@@ -59,7 +59,7 @@ if(config.id){
   };
 
   function onPlayerReady(event) {
-    // player.mute();
+    player.mute();
     $('.video-container').show();
     $('.loader').hide();
   }
@@ -67,16 +67,26 @@ if(config.id){
   function onPlayerStateChange(event) {
     if (config.endTime && event.data == YT.PlayerState.PLAYING && !done) {
       loop || animateRecord();
+      console.log(2)
+      loop && audioWrapper.play() || audioWrapper.record();
       stopTimeout = setTimeout(function (){
         player.pauseVideo();
         loop && play();
       }, config.endTime * 1000);
       done = true;
     } else if(event.data == YT.PlayerState.PAUSED){
+      var el;
+      if(!loop)
+        el = audioWrapper.stop();
       $('.blocker .retry').removeClass('hide');
       $('.slider').text('Save').data('action', 'save').attr('class', 'slider save');
       loop = true;
-      play();
+      if((audioWrapper.el() || {}).readyState > 2)
+        play()
+      else if(el)
+        el.oncanplay = play;
+      else if(audioWrapper.el())
+        audioWrapper.el().oncanplay = play;
     }
   }
   $('.record').click(function(e){
@@ -97,17 +107,14 @@ function animateRecord(){
 };
 
 function retry(e){
-  clearInterval(stopTimeout);
-  loop = false;
-  $('.slider').css('backgroundSize', '0').text('Stop').data('action', 'stop').attr('class', 'slider stop');
-  $('.blocker .retry').addClass('hide');
-  play();
+  window.location.reload();
 };
 
 $('.slider').click(function(e){
   switch($(this).data('action')){
     case 'stop':
       player.stopVideo();
+      audioWrapper.stop();
       clearInterval(stopTimeout);
       $('.slider').stop().text('Retry').data('action', 'retry').attr('class', 'slider retry');
       break;
@@ -132,3 +139,12 @@ $('.go').click(function(e){
   }
   window.location = "/?"+id[0]+(start && '&start='+start || '')+(end &&  '&end='+end || '')+'/';
 });
+
+var audioWrapper = {
+  el: function(){ return $('#audio audio').get(0)},
+  play: function(){ this.el() && this.el().play()},
+  pause: function(){ this.el() && this.el().pause()},
+  reset: function(){ this.el() && this.el().load()},
+  record: function(){ startRecording()},
+  stop: function(){this.au = stopRecording(); return this.au;}
+}

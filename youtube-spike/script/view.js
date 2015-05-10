@@ -5,10 +5,24 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
   // id: 'XjGdfSttg48'
-$.ajax({
-  url: 'http://localhost:5000/save?k='+getParameterByName('k'),
-  success: function(data){
-    d = JSON.parse(data);
-    window.location = '/?'+(/v=[^&]*/.exec(d[3]))+'&start='+d[4]+'&end='+(+d[4] + +d[5])+'&aud='+d[2]
+
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
   }
-})
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+      d = JSON.parse(xmlhttp.responseText);
+      window.location = '/?'+(/v=[^&]*/.exec(d[3]))+'&start='+d[4]+'&end='+(+d[4] + +d[5])+'&aud='+d[2]
+    }
+  }
+xmlhttp.open("GET",'http://localhost:5000/save?k='+getParameterByName('k'),true);
+xmlhttp.send();
+

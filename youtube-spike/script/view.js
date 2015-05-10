@@ -23,6 +23,6 @@ xmlhttp.onreadystatechange=function()
       window.location = '/?'+(/v=[^&]*/.exec(d[3]))+'&start='+d[4]+'&end='+(+d[4] + +d[5])+'&aud='+d[2]
     }
   }
-xmlhttp.open("GET",'http://localhost:5000/save?k='+getParameterByName('k'),true);
+xmlhttp.open("GET",'http://voicemash.bharathraja.in:5000/save?k='+getParameterByName('k'),true);
 xmlhttp.send();
 
